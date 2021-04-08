@@ -84,17 +84,17 @@ class ExampleSpider(scrapy.Spider):
         item = SciAbsItem()
         driver = response.meta.get('driver')
 
-        try:
-            driver.find_element_by_xpath("//*[@id='show-more-btn']").click()
-            # time.sleep(5)
-            WebDriverWait(driver, 20).until(lambda d: d.find_element_by_id("author-group"))
-            # res = HtmlResponse(url=driver.current_url, body=driver.page_source, encoding='utf-8')
-            # aff = res.xpath('//*[@id="author-group"]/dl[1]/dd/text()').get()
-            aff = driver.find_element_by_xpath('//*[@id="author-group"]/dl[1]/dd/').text
-        except:
-            aff = None
-        finally:
-            item['author_aff_address'] = aff
+        # try:
+        #     driver.find_element_by_xpath("//*[@id='show-more-btn']").click()
+        #     # time.sleep(5)
+        #     WebDriverWait(driver, 20).until(lambda d: d.find_element_by_id("author-group"))
+        #     # res = HtmlResponse(url=driver.current_url, body=driver.page_source, encoding='utf-8')
+        #     # aff = res.xpath('//*[@id="author-group"]/dl[1]/dd/text()').get()
+        #     aff = driver.find_element_by_xpath('//*[@id="author-group"]/dl[1]/dd/').text
+        # except:
+        #     aff = None
+        # finally:
+        item['author_aff_address'] = None
         item['journal'] = journal
         volume_issue = response.xpath("//div[contains(@class,'publication-volume')]/div/a/text()").get()
         if isinstance(volume_issue,str) and re.search(r',', volume_issue):
