@@ -31,26 +31,12 @@ class ExampleSpider(scrapy.Spider):
         '''
         make request from returned url of jour_urls
         '''
-        # i = 0
-        # url = "https://www.sciencedirect.com/science/article/pii/S1876380421600150"
+
         for journal, url in self.jour_urls.items():
-            # while i < 10:
-            #     i = i + 1
             yield scrapy.Request(url=url,
                              callback=self.parse_jour,
                              cb_kwargs={'journal': journal}
                              )
-        # yield SeleniumRequest(
-        #     url=url,
-        #     callback=self.parse,
-        #     # cb_kwargs={
-        #     #     'journal': journal,
-        #     #     # 'article_title': article_title,
-        #     #     'pdf_downloading_link': pdf_downloading_link,
-        #     #     'issue_date': issue_date},
-        #     wait_time=10
-        #
-        # )
 
     def parse_jour(self, response, journal):
         '''
@@ -68,15 +54,6 @@ class ExampleSpider(scrapy.Spider):
                 if response.css('a.pdf-download').attrib.get('href') else None
 
             if not self.db[self.collection].find_one({'article_link': article_link}):
-
-            # yield response.follow(url=article_link,
-            #                       callback=self.parse,
-            #                       cb_kwargs={
-            #                           'journal':journal,
-            #                           # 'article_title': article_title,
-            #                           'pdf_downloading_link': pdf_downloading_link,
-            #                           'issue_date':issue_date
-            #                       })
                 yield SeleniumRequest(
                     url=base_url + article_link,
                     callback=self.parse,
@@ -89,13 +66,13 @@ class ExampleSpider(scrapy.Spider):
                         wait_time=10
                 )
         # more articles links
-        # time.sleep(10)
-        # more_articles = response.css('a.button-alternative.js-listing-link.button-alternative-primary') \
-        #     .attrib.get('href')
-        # if more_articles:
-        #     yield response.follow(url=more_articles,
-        #                           callback=self.parse_jour,
-        #                           cb_kwargs={'journal': journal})
+        time.sleep(10)
+        more_articles = response.css('a.button-alternative.js-listing-link.button-alternative-primary') \
+            .attrib.get('href')
+        if more_articles:
+            yield response.follow(url=more_articles,
+                                  callback=self.parse_jour,
+                                  cb_kwargs={'journal': journal})
 
     def parse(self, response, journal, pdf_downloading_link, issue_date):
         '''
@@ -143,15 +120,6 @@ class ExampleSpider(scrapy.Spider):
                                 and contains(@class,'abstract')]/div/p//text()").getall()
         item['keywords'] = response.css('div.Keywords span::text').getall()
         item['issue_date'] = issue_date
-        # html = HtmlResponse(url=response.url, body=driver.page_source, encoding='utf-8')
-        # download_link = html.xpath("//div[@class='u-margin-s-ver']/a").attrib.get('href')
-        # item['pdf_link'] =  download_link
         item['pdf_link'] = pdf_downloading_link
-        # try:
-
-        # except:
-        #     item['author_aff_address'] = None
-
-        # finally:
         yield item
 
