@@ -54,7 +54,8 @@ class ExampleSpider(scrapy.Spider):
                 if response.css('a.pdf-download').attrib.get('href') else None
 
             if not self.db[self.collection].find_one({'article_link': article_link}):
-                yield SeleniumRequest(
+                # yield SeleniumRequest(
+                yield scrapy.Request(
                     url=base_url + article_link,
                     callback=self.parse,
                     cb_kwargs={
@@ -63,10 +64,10 @@ class ExampleSpider(scrapy.Spider):
                         'pdf_downloading_link': pdf_downloading_link,
                         'issue_date': issue_date},
                         # wait_until=EC.presence_of_element_located((By.ID, 'abstacts')),
-                        wait_time=10
+                        # wait_time=10
                 )
         # more articles links
-        time.sleep(10)
+        time.sleep(3)
         more_articles = response.css('a.button-alternative.js-listing-link.button-alternative-primary') \
             .attrib.get('href')
         if more_articles:
@@ -82,7 +83,7 @@ class ExampleSpider(scrapy.Spider):
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
         item = SciAbsItem()
-        driver = response.meta.get('driver')
+        # driver = response.meta.get('driver')
 
         # try:
         #     driver.find_element_by_xpath("//*[@id='show-more-btn']").click()
