@@ -27,7 +27,7 @@ SELENIUM_DRIVER_ARGUMENTS = ['-headless']  # '--headless' if using chrome instea
 RETRY_TIMES = 3
 # Retry on most error codes since proxies fail for different reasons
 RETRY_HTTP_CODES = [500, 503, 504, 400, 403, 404, 408]
-PROXY_LIST = 'sci_abs/spiders/proxies'
+PROXY_LIST = 'sci_abs/spiders/proxies_round2'
 PROXY_MODE = 0  # different proxy for each request
 RANDOM_UA_PER_PROXY = True
 FAKEUSERAGENT_FALLBACK = 'Mozillapip install scrapy_proxies'
