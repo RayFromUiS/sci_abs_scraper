@@ -12,7 +12,7 @@ from itemadapter import ItemAdapter
 
 class SciAbsPipeline:
 
-    collection_name = 'sci_abs'
+    # collection_name = 'sci_abs'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -35,6 +35,6 @@ class SciAbsPipeline:
         self.client.close()
 
     def process_item(self, item, spider):
-        if not self.db[self.collection_name].find_one({'article_link': item.get('article_link')}):
-            self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
+        if not spider.db[spider.collection].find_one({'article_link': item.get('article_link')}):
+            spider.db[spider.collection].insert_one(ItemAdapter(item).asdict())
 

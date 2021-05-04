@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'sci_abs.spiders'
 
 # Obey robots.txt rules
 # ROBOTSTXT_OBEY = True
-DOWNLOAD_DELAY = 5
+DOWNLOAD_DELAY = 2
 RANDOMIZE_DOWNLOAD_DELAY = True
 SELENIUM_DRIVER_NAME = 'firefox'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('geckodriver')
@@ -88,19 +88,30 @@ ITEM_PIPELINES = {
 
 MONGO_URI= 'mongodb://root:jinzheng1706@139.198.191.224:27017/'
 MONGO_DATABASE='abstracts'
-# # SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-# SCHEDULER_PERSIST = True
-# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
-# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-# # Specify the host and port to use when connecting to Redis (optional).
-# REDIS_HOST = 'localhost'
-# REDIS_PORT = 6379
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+SCHEDULER_PERSIST = True
+SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# Specify the host and port to use when connecting to Redis (optional).
+REDIS_HOST = '139.198.191.224'
+REDIS_PORT = 6379
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
-
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER_PERSIST = True
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
+# # STATS_CLASS = "scrapy_redis.stats.RedisStatsCollector"
+# # STATS_CLASS = "scrapy_redis.stats.RedisStatsCollector"
+#
+# # SCHEDULER_PERSIST = True
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# # Specify the host and port to use when connecting to Redis (optional).
+# REDIS_HOST = '139.198.191.224'
+# # REDIS_HOST='localhost'
+# REDIS_PORT = 6379
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {

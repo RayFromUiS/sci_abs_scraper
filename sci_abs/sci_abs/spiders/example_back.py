@@ -13,46 +13,33 @@ from selenium.webdriver.common.by import By
 
 from selenium.webdriver.support.ui import WebDriverWait
 from bs4 import BeautifulSoup
-from scrapy_redis.spiders import  RedisSpider
 
 
-class ExampleSpider(RedisSpider):
+class ExampleSpider(scrapy.Spider):
     name = 'example'
     # allowed_domains = ['example.com']
-    # jour_urls = read_urls()
-    redis_key = "sci_direct:start_urls"
-    # jour_names = list(jour_urls.keys())
+    jour_urls = read_urls()
+    jour_names = list(jour_urls.keys())
 
     def __init__(self):
         self.mongo_uri = get_project_settings().get('MONGO_URI')
         self.mongo_db = get_project_settings().get('MONGO_DATABASE')
-        self.collection = 'sci_abs_split'
+        self.collection = 'sci_abs'
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 
-    # def start_requests(self):
-    #     '''
-    #     make request from returned url of jour_urls
-    #     '''
-    #
-    #     for journal, url in self.jour_urls.items():
-    #         yield scrapy.Request(url=url,
-    #                              callback=self.parse_jour,
-    #                              cb_kwargs={'journal': journal}
-    #                              )
+    def start_requests(self):
+        '''
+        make request from returned url of jour_urls
+        '''
 
-    def make_requests_from_url(self, url):
-        return scrapy.Request(url=url ,
-                                      # callback=self.parse_pages,
-                                      # wait_time=30,
-                                      # wait_until=EC.presence_of_element_located((By.XPATH, '//a[@class="next"]')),
-                                      # wait_until=EC.new_window_is_opened,
-                                      cb_kwargs={'journal': url.split('/')[-1],
-                                          # , 'page_number': 1
-                                                 }
-                                      )
+        for journal, url in self.jour_urls.items():
+            yield scrapy.Request(url=url,
+                                 callback=self.parse_jour,
+                                 cb_kwargs={'journal': journal}
+                                 )
 
-    def parse(self, response, journal):
+    def parse_jour(self, response, journal):
         '''
         parse the journl links and maybe other item related info
         '''
@@ -71,7 +58,7 @@ class ExampleSpider(RedisSpider):
                 # yield SeleniumRequest(
                 yield scrapy.Request(
                     url=base_url + article_link,
-                    callback=self.parse_item,
+                    callback=self.parse,
                     cb_kwargs={
                         'journal': journal,
                         'article_title': article_title,
@@ -103,7 +90,7 @@ class ExampleSpider(RedisSpider):
                 # yield SeleniumRequest(
                 yield scrapy.Request(
                     url=base_url + article_link,
-                    callback=self.parse_item,
+                    callback=self.parse,
                     cb_kwargs={
                         'journal': journal,
                         'article_title': article_title,
@@ -121,7 +108,7 @@ class ExampleSpider(RedisSpider):
                                   )
 
 
-    def parse_item(self, response, journal, pdf_downloading_link, issue_date,article_title):
+    def parse(self, response, journal, pdf_downloading_link, issue_date,article_title):
         '''
         parse html and store inside item accordingly
         '''
@@ -174,7 +161,6 @@ class ExampleSpider(RedisSpider):
                 issue_date = datetime.strptime(date, '%B %Y').strftime('%Y-%m')
             except:
                 continue
-
         item['issue_date'] = issue_date if issue_date else issue_date_detail
         item['pdf_link'] = pdf_downloading_link
         yield item
